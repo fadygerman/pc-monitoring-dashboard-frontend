@@ -1,0 +1,97 @@
+.pc-status {
+  $base-spacing: 10px;
+  
+  padding: $base-spacing;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 
+    background-color 0.3s ease,
+    opacity 0.3s ease;
+  min-width: 100px;
+  min-height: 80px;
+  width: 120px;
+  height: 100px;
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  flex: 0 0 auto;
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #323130;
+  }
+
+  p {
+    font-size: 12px;
+    margin: 0;
+    color: #605e5c;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.available {
+    background-color: #d4edda;
+  }
+
+  &.in_use {
+    background-color: #f8a8ae;
+  }
+
+  &.loading {
+    position: relative;
+  }
+
+  &.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-top: 2px solid #000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.pc-status-container {
+    position: relative;
+    
+    .error-message {
+        background-color: #ff6b6b;
+        color: white;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+    }
+
+    .loading-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
