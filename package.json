@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@fluentui/react": "^8.122.6",
-    "axios": "^0.21.1",
     "firebase": "^11.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
