@@ -92,7 +92,7 @@ function Dashboard() {
                 currentUser: '',
                 since: new Date()
             });
-            await refreshPCs(); // reuse refreshPCs
+            await refreshPCs(); 
             setNewPC({ 
                 Title: '', 
                 Group: '', 
