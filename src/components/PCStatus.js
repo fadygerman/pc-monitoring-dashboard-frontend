@@ -74,7 +74,6 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                 {status === 'in_use' && pc.currentUser && (
                     <div className="user-info">
                         <UserDisplay userName={pc.currentUser} compact />
-                        {pc.since && formatDateTime(pc.since) && <div>Since: {formatDateTime(pc.since)}</div>}
                     </div>
                 )}
 
