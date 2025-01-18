@@ -21,17 +21,16 @@ def get_connection():
 @app.route(route="ReadPC", auth_level=func.AuthLevel.ANONYMOUS)
 def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+
+    headers = {
+        "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400"
+    }
     
     if req.method == "OPTIONS":
-        return func.HttpResponse(
-            status_code=200,
-            headers={
-                "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization",
-                "Access-Control-Max-Age": "86400"
-            }
-        )
+        return func.HttpResponse(status_code=200, headers=headers)
         
     try:
         conn = get_connection()
@@ -57,19 +56,12 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
             body=json.dumps(result),
             mimetype="application/json",
             status_code=200,
-            headers={
-                "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization"
-            }
+            headers=headers
+
         )
     except Exception as e:
         return func.HttpResponse(
             str(e),
             status_code=500,
-            headers={
-                "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization"
-            }
+            headers=headers
         )
