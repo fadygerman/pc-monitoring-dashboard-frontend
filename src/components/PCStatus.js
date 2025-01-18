@@ -44,9 +44,10 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
 
     const formatDateTime = (dateString) => {
         try {
-            return new Date(dateString).toLocaleString();
+            const date = new Date(dateString);
+            return isNaN(date.getTime()) ? null : date.toLocaleString();
         } catch {
-            return dateString;
+            return null;
         }
     };
 
@@ -73,6 +74,7 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                 {status === 'in_use' && pc.currentUser && (
                     <div className="user-info">
                         <UserDisplay userName={pc.currentUser} compact />
+                        {pc.since && formatDateTime(pc.since) && <div>Since: {formatDateTime(pc.since)}</div>}
                     </div>
                 )}
 
@@ -80,7 +82,7 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     <div className={`hover-info ${status}`}>
                         <div>{status === 'maintenance' ? 'Under Maintenance' : 'System Offline'}</div>
                         {pc.currentUser && <div>User: {pc.currentUser}</div>}
-                        {pc.since && <div>Since: {formatDateTime(pc.since)}</div>}
+                        {pc.since && formatDateTime(pc.since) && <div>Since: {formatDateTime(pc.since)}</div>}
                     </div>
                 )}
             </div>

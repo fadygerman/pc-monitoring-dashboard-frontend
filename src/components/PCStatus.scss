@@ -64,6 +64,45 @@
     animation: spin 1s linear infinite;
     transform: translate(-50%, -50%);
   }
+
+  .user-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    min-height: 42px;
+    font-size: 12px;
+    color: #605e5c;
+
+    .user-coin {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #03787c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      .user-initials {
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 14px;
+        text-transform: uppercase;
+      }
+    }
+
+    .user-name {
+      font-size: 12px;
+      font-weight: 400;
+      color: #323130;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 16px;
+    }
+  }
 }
 
 .pc-status-container {
