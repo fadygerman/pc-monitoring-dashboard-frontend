@@ -62,16 +62,17 @@ function Dashboard() {
 
     const updatePCStatusHandler = async (id, status) => {
         try {
-            await updatePCStatus(id, status, 'currentUser');
-            const oldPc = pcs.find(pc => pc.id === id);
-            const updatedSince =
-                status === 'in_use' && oldPc.status !== 'in_use'
-                    ? new Date()
-                    : oldPc.since;
-
+            const timestamp = new Date().toISOString();
+            await updatePCStatus(id, status, 'currentUser', timestamp);
+            
             const updatedPcs = pcs.map(pc =>
                 pc.id === id
-                    ? { ...pc, status, currentUser: 'currentUser', since: updatedSince }
+                    ? { 
+                        ...pc, 
+                        status,
+                        currentUser: status === 'in_use' ? 'currentUser' : '',
+                        since: timestamp  // Always update the timestamp
+                      }
                     : pc
             );
             setPcs(updatedPcs);

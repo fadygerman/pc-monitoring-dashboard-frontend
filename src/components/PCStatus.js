@@ -26,7 +26,9 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
             try {
                 setLoading(true);
                 const newStatus = pc.status === 'available' ? 'in_use' : 'available';
-                await updatePCStatus(pc.id, newStatus);
+                // Always include the current timestamp when updating status
+                const timestamp = new Date().toISOString();
+                await updatePCStatus(pc.id, newStatus, currentUser, timestamp);
                 setStatus(newStatus);
             } catch (err) {
                 if (err.response && err.response.status === 404) {
@@ -77,14 +79,12 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     </div>
                 )}
 
-                {/* Updated hover info to show for all relevant states */}
-                {(status === 'in_use' || status === 'maintenance' || status === 'offline') && (
+                {/* Show hover info for all non-available states */}
+                {status !== 'available' && (
                     <div className={`hover-info ${status}`}>
                         <div>{getStatusDisplay(status)}</div>
                         {pc.currentUser && <div>User: {pc.currentUser}</div>}
-                        {pc.since && formatDateTime(pc.since) && (
-                            <div>Since: {formatDateTime(pc.since)}</div>
-                        )}
+                        {pc.since && <div>Since: {formatDateTime(pc.since)}</div>}
                     </div>
                 )}
             </div>
