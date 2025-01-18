@@ -77,11 +77,14 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     </div>
                 )}
 
-                {(status === 'maintenance' || status === 'offline') && (
+                {/* Updated hover info to show for all relevant states */}
+                {(status === 'in_use' || status === 'maintenance' || status === 'offline') && (
                     <div className={`hover-info ${status}`}>
-                        <div>{status === 'maintenance' ? 'Under Maintenance' : 'System Offline'}</div>
+                        <div>{getStatusDisplay(status)}</div>
                         {pc.currentUser && <div>User: {pc.currentUser}</div>}
-                        {pc.since && formatDateTime(pc.since) && <div>Since: {formatDateTime(pc.since)}</div>}
+                        {pc.since && formatDateTime(pc.since) && (
+                            <div>Since: {formatDateTime(pc.since)}</div>
+                        )}
                     </div>
                 )}
             </div>

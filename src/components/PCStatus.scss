@@ -599,6 +599,18 @@
     &.offline {
       background-color: rgba(108, 117, 125, 0.9);
     }
+
+    &.in_use {
+      background-color: rgba(220, 53, 69, 0.9);
+    }
+
+    div {
+      margin: 2px 0;
+      
+      &:first-child {
+        font-weight: bold;
+      }
+    }
   }
 
   &.in_use:hover,
