@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './PCStatus.scss'; // Updated to import SCSS file
+import './PCStatus.scss';
 
 const UserDisplay = ({ userName, compact }) => (
   <div className={`user-display ${compact ? 'compact' : ''}`} title={`In use by: ${userName}`}>

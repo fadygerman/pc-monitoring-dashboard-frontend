@@ -3,7 +3,7 @@ import { getPCs, updatePCStatus, addPC, getGroups } from './fsData';
 import PCStatus from './PCStatus';
 import PCList from './PCList';
 import AddPCForm from './AddPCForm';
-import './Dashboard.scss';
+import './PCStatus.scss';
 
 function Dashboard() {
     const [pcs, setPcs] = useState([]);
