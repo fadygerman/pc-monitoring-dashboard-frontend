@@ -19,7 +19,7 @@ function PCList() {
     }, []);
 
     return (
-        <div>
+        <div style={{ display: 'none' }}>
             {error && <div className="error-message">{error}</div>}
             <ul>
                 {pcs.map(pc => (
