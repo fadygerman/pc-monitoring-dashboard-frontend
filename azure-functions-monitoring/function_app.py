@@ -26,7 +26,7 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
         credential = DefaultAzureCredential()
         token = credential.get_token("https://database.windows.net/.default").token
         
-        conn_str = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};Authentication=ActiveDirectoryMsi;'
+        conn_str = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Authentication=ActiveDirectoryMsi;'
         conn = pyodbc.connect(conn_str, attrs_before={1256: token})
         
         cursor = conn.cursor()
