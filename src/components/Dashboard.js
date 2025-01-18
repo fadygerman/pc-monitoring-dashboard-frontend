@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getPCs, updatePCStatus, addPC } from './fsData';
+import axios from 'axios';
 import PCStatus from './PCStatus';
 import './Dashboard.scss';
+
+const BaseUrl = 'https://pc-monitoring-func-app.azurewebsites.net/api/';
+const ApiUrl = `${BaseUrl}ReadPC`;
+const GroupsApiUrl = `${BaseUrl}ReadPC`;  // Temporarily use same endpoint until groups endpoint is ready
 
 function Dashboard() {
     const [pcs, setPcs] = useState([]);
@@ -15,28 +19,62 @@ function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const pcsData = await getPCs();
-                setPcs(pcsData);
+                const response = await axios.get(ApiUrl, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                setPcs(response.data);
                 setError(null);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching data:", error.response?.data || error.message);
                 setError("Failed to load PCs. Please try again later.");
             }
         };
 
+        const fetchGroups = async () => {
+            try {
+                const response = await axios.get(GroupsApiUrl);
+                // Temporarily extract groups from PCs until groups endpoint is ready
+                const uniqueGroups = [...new Set(response.data.map(pc => pc.group))];
+                const groupsData = uniqueGroups.reduce((acc, group, index) => {
+                    acc[group] = group;
+                    return acc;
+                }, {});
+                setGroups(groupsData);
+            } catch (error) {
+                console.error('Error fetching groups:', error.response?.data || error.message);
+            }
+        };
+
+        fetchGroups();
         fetchData();
     }, []);
 
-    const updatePCStatusHandler = async (id, status) => {
+    const refreshPCs = async () => {
         try {
-            await updatePCStatus(id, status, 'currentUser');
-            const updatedPcs = pcs.map(pc => 
-                pc.id === id 
-                    ? { ...pc, status, currentUser: 'currentUser', since: new Date() } 
-                    : pc
-            );
+            const response = await axios.get(ApiUrl);
+            setPcs(response.data);
+            setError(null);
+        } catch (error) {
+            console.error('Error refreshing PCs:', error);
+            setError(error.message || "An unexpected error occurred while refreshing PCs.");
+        }
+    };
+
+    const updatePCStatus = async (id, status) => {
+        try {
+            const since = status === 'in_use' ? new Date().toISOString() : '';
+            await axios.patch(`${ApiUrl}${id}/`, {
+                status,
+                since,
+                currentUser: 'currentUser'
+            });
+
+            const updatedPcs = pcs.map(pc => (pc.id === id ? { ...pc, status, currentUser: 'currentUser', since } : pc));
             setPcs(updatedPcs);
             setError(null);
+            await refreshPCs();
         } catch (error) {
             console.error('Update error:', error);
             setError("Failed to update PC status. Please try again.");
@@ -46,14 +84,8 @@ function Dashboard() {
     const handleAddPC = async (e) => {
         e.preventDefault();
         try {
-            await addPC(newPC.Group, {
-                name: newPC.Title,
-                status: 'available',
-                currentUser: '',
-                since: new Date()
-            });
-            const updatedPCs = await getPCs();
-            setPcs(updatedPCs);
+            await axios.post(ApiUrl, newPC);
+            await refreshPCs();
         } catch (error) {
             console.error('Error adding PC:', error);
             setError(error.message || "An unexpected error occurred while adding a new PC.");
@@ -124,7 +156,7 @@ function Dashboard() {
                                 <PCStatus
                                     key={pc.id}
                                     pc={pc}
-                                    updatePCStatus={updatePCStatusHandler}
+                                    updatePCStatus={updatePCStatus}
                                     currentUser={'currentUser'}
                                 />
                             ))}
