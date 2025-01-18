@@ -12,6 +12,13 @@ function Dashboard() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [showAdminForm, setShowAdminForm] = useState(false);
     const formRef = useRef(null);
+    const [newPC, setNewPC] = useState({
+        Title: '',
+        Group: '',
+        Status: 'available',
+        CurrentUser: '',
+        Since: ''
+    });
 
     useEffect(() => {
         const fetchData = async () => {
