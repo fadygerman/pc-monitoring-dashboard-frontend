@@ -62,12 +62,11 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
     };
 
     return (
-        <section className="pc-status-container">
-            {error && <div className="error-message">{error}</div>}
-            
+        <div className="pc-item">
             <div
-                className={`pc-status ${pc.status} ${loading ? 'loading' : ''}`}
-                onClick={handleStatusChange}        >
+                className={`pc-box ${status} ${loading ? 'loading' : ''}`}
+                onClick={handleStatusChange}
+            >
                 {loading && <div className="loading-spinner" />}
                 <h3>{pc.name}</h3>
                 <p>{getStatusDisplay(status)}</p>
@@ -85,7 +84,7 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     </div>
                 )}
             </div>
-        </section>
+        </div>
     );
 };
 
