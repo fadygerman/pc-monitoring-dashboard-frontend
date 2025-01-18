@@ -3,8 +3,8 @@ import axios from 'axios';
 import PCStatus from './PCStatus';
 import './Dashboard.scss';
 
-const BaseUrl = 'https://<your-backend-app-service>.azurewebsites.net/';
-const ApiUrl = 'https://pc-monitoring-func-app.azurewebsites.net/api/ReadPC';
+const BaseUrl = 'https://pc-monitoring-func-app.azurewebsites.net/';
+const ApiUrl = `${BaseUrl}api/ReadPC`;
 const GroupsApiUrl = `${BaseUrl}api/groups/`;
 
 function Dashboard() {
