@@ -21,12 +21,12 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(status_code=200, headers=headers)
 
     try:
-        server = 'pc-dashboard-server.database.windows.net'
+        server = 'tcp:pc-dashboard-server.database.windows.net,1433'
         database = 'monitoring-db'
         credential = DefaultAzureCredential()
         token = credential.get_token("https://database.windows.net/.default").token
         
-        conn_str = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Authentication=ActiveDirectoryMsi;'
+        conn_str = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Authentication=ActiveDirectoryMsi;TrustServerCertificate=no;Connection Timeout=30;'
         conn = pyodbc.connect(conn_str, attrs_before={1256: token})
         
         cursor = conn.cursor()
