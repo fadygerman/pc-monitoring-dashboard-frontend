@@ -128,28 +128,62 @@
   }
 
   &.maintenance {
-    background-color: #ffeeba;
+    background-color: #fff3cd;
     border: 2px dashed #856404;
-
+    cursor: not-allowed;
+    opacity: 1; // Added to ensure visibility
+    position: relative; // Added to ensure proper positioning
+    
     &::before {
       content: '🔧';
       position: absolute;
       top: 5px;
       right: 5px;
       font-size: 14px;
+      z-index: 1; // Added to ensure visibility
+    }
+
+    p {
+      color: #856404;
+      font-weight: bold;
+    }
+
+    h3 {
+      color: #856404; // Added to match the warning theme
+    }
+
+    .userInfo {
+      border-top-color: rgba(133, 100, 4, 0.2); // Added for better visual separation
     }
   }
 
   &.offline {
-    background-color: #d6d8d9;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
     opacity: 0.7;
-
+    cursor: not-allowed;
+    position: relative; // Added to ensure proper positioning
+    
     &::before {
       content: '⚡';
       position: absolute;
       top: 5px;
       right: 5px;
       font-size: 14px;
+      z-index: 1; // Added to ensure visibility
+    }
+
+    p {
+      color: #6c757d;
+      font-weight: bold;
+    }
+
+    h3 {
+      color: #6c757d; // Added to match the offline theme
+    }
+
+    .userInfo {
+      border-top-color: rgba(108, 117, 125, 0.2); // Added for better visual separation
     }
   }
 
@@ -183,42 +217,11 @@
     cursor: not-allowed;
   }
 
-  &.maintenance {
-    background-color: #fff3cd;
-    border: 2px dashed #856404;
-    cursor: not-allowed;
-
-    &::before {
-      content: '🔧';
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 14px;
-    }
-
-    p {
-      color: #856404;
-      font-weight: bold;
-    }
-  }
-
-  &.offline {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    opacity: 0.7;
-    cursor: not-allowed;
-
-    &::before {
-      content: '⚡';
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 14px;
-    }
-
-    p {
-      color: #6c757d;
-      font-weight: bold;
+  &.maintenance:hover,
+  &.offline:hover {
+    .hoverInfo {
+      display: block;
+      z-index: 2; // Added to ensure tooltip appears above icons
     }
   }
 
