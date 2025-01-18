@@ -1,0 +1,6 @@
+
+# ...existing code...
+# Ensure logo192.png is in the public folder
+# If missing, add the file to the public directory
+# For example:
+# cp path/to/your/logo192.png public/

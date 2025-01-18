@@ -1,0 +1,6 @@
+
+# ...existing code...
+# Ensure favicon.ico is in the public folder
+# If missing, add the file to the public directory
+# For example:
+# cp path/to/your/favicon.ico public/

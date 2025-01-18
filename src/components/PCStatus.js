@@ -29,7 +29,13 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                 await updatePCStatus(pc.id, newStatus);
                 setStatus(newStatus);
             } catch (err) {
-                setError(err.message || "An error occurred while updating PC status");
+                if (err.response && err.response.status === 404) {
+                    setError("API endpoint not found.");
+                } else if (err.response && err.response.status === 403) {
+                    setError("CORS error: Access denied.");
+                } else {
+                    setError(err.message || "An error occurred while updating PC status");
+                }
             } finally {
                 setLoading(false);
             }
