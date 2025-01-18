@@ -52,6 +52,13 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
             status_code=200,
             headers=headers
         )
+    except pyodbc.Error as e:
+        logging.error(f"ODBC Error: {str(e)}")
+        return func.HttpResponse(
+            body=json.dumps({"error": "Database connection error. Please check ODBC driver installation."}),
+            status_code=500,
+            headers=headers
+        )
     except Exception as e:
         logging.error(f"Error: {str(e)}")
         return func.HttpResponse(
