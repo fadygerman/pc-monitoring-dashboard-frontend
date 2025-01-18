@@ -21,6 +21,18 @@ def get_connection():
 @app.route(route="ReadPC", auth_level=func.AuthLevel.ANONYMOUS)
 def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+    
+    if req.method == "OPTIONS":
+        return func.HttpResponse(
+            status_code=200,
+            headers={
+                "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                "Access-Control-Max-Age": "86400"
+            }
+        )
+        
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -34,7 +46,7 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
                 'id': row[0],
                 'name': row[1],
                 'status': row[2],
-                'group_id': row[3],
+                'group': row[3],  # Changed from group_id to group
                 'currentUser': row[4],
                 'since': row[5],
                 'verbose_name': row[6],
@@ -46,9 +58,9 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
             mimetype="application/json",
             status_code=200,
             headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type"
+                "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
             }
         )
     except Exception as e:
@@ -56,8 +68,8 @@ def ReadPC(req: func.HttpRequest) -> func.HttpResponse:
             str(e),
             status_code=500,
             headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type"
+                "Access-Control-Allow-Origin": "https://gray-plant-0cded9103.4.azurestaticapps.net",
+                "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization"
             }
         )

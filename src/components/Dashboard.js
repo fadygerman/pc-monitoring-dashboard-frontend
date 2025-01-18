@@ -3,9 +3,9 @@ import axios from 'axios';
 import PCStatus from './PCStatus';
 import './Dashboard.scss';
 
-const BaseUrl = 'https://pc-monitoring-func-app.azurewebsites.net/';
-const ApiUrl = `${BaseUrl}api/ReadPC`;
-const GroupsApiUrl = `${BaseUrl}api/groups/`;
+const BaseUrl = 'https://pc-monitoring-func-app.azurewebsites.net/api/';
+const ApiUrl = `${BaseUrl}ReadPC`;
+const GroupsApiUrl = `${BaseUrl}ReadPC`;  // Temporarily use same endpoint until groups endpoint is ready
 
 function Dashboard() {
     const [pcs, setPcs] = useState([]);
@@ -19,25 +19,31 @@ function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(ApiUrl);
+                const response = await axios.get(ApiUrl, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
                 setPcs(response.data);
                 setError(null);
             } catch (error) {
-                console.error("Error fetching data", error);
-                setError(error.message || "An unexpected error occurred while loading PCs.");
+                console.error("Error fetching data:", error.response?.data || error.message);
+                setError("Failed to load PCs. Please try again later.");
             }
         };
 
         const fetchGroups = async () => {
             try {
                 const response = await axios.get(GroupsApiUrl);
-                const groupsData = response.data.reduce((acc, group) => {
-                    acc[group.id] = group.name;
+                // Temporarily extract groups from PCs until groups endpoint is ready
+                const uniqueGroups = [...new Set(response.data.map(pc => pc.group))];
+                const groupsData = uniqueGroups.reduce((acc, group, index) => {
+                    acc[group] = group;
                     return acc;
                 }, {});
                 setGroups(groupsData);
             } catch (error) {
-                console.error('Error fetching groups:', error);
+                console.error('Error fetching groups:', error.response?.data || error.message);
             }
         };
 
