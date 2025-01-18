@@ -1,2 +1,13 @@
+# Node modules
 node_modules/
-.vscode
+
+# Build outputs
+dist/
+build/
+.vscode/
+
+# Environment variables
+.env
+
+# Microsoft package file
+packages-microsoft-prod.deb
