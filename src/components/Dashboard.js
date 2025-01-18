@@ -1,16 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import { getPCs, updatePCStatus, addPC, getGroups } from './fsData';
 import PCStatus from './PCStatus';
+import PCList from './PCList';
+import AddPCForm from './AddPCForm';
 import './Dashboard.scss';
-
-const BaseUrl = 'https://pc-monitoring-func-app.azurewebsites.net/api/';
-const ApiUrl = `${BaseUrl}ReadPC`;
-const GroupsApiUrl = `${BaseUrl}ReadPC`;  // Temporarily use same endpoint until groups endpoint is ready
 
 function Dashboard() {
     const [pcs, setPcs] = useState([]);
     const [groups, setGroups] = useState({});
-    const [newPC, setNewPC] = useState({ Title: '', Status: 'available', Group: '', CurrentUser: '', Since: '' });
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [showAdminForm, setShowAdminForm] = useState(false);
@@ -19,62 +16,41 @@ function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(ApiUrl, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                setPcs(response.data);
+                const pcsData = await getPCs();
+                setPcs(pcsData);
+                const groupsData = await getGroups();
+                setGroups(groupsData);
                 setError(null);
             } catch (error) {
-                console.error("Error fetching data:", error.response?.data || error.message);
-                setError("Failed to load PCs. Please try again later.");
+                console.error("Error fetching data:", error);
+                setError("Failed to load data. Please try again later.");
             }
         };
 
-        const fetchGroups = async () => {
-            try {
-                const response = await axios.get(GroupsApiUrl);
-                // Temporarily extract groups from PCs until groups endpoint is ready
-                const uniqueGroups = [...new Set(response.data.map(pc => pc.group))];
-                const groupsData = uniqueGroups.reduce((acc, group, index) => {
-                    acc[group] = group;
-                    return acc;
-                }, {});
-                setGroups(groupsData);
-            } catch (error) {
-                console.error('Error fetching groups:', error.response?.data || error.message);
-            }
-        };
-
-        fetchGroups();
         fetchData();
     }, []);
 
     const refreshPCs = async () => {
         try {
-            const response = await axios.get(ApiUrl);
-            setPcs(response.data);
+            const pcsData = await getPCs();
+            setPcs(pcsData);
             setError(null);
         } catch (error) {
-            console.error('Error refreshing PCs:', error);
-            setError(error.message || "An unexpected error occurred while refreshing PCs.");
+            console.error("Error refreshing PCs:", error);
+            setError("Failed to refresh PCs. Please try again later.");
         }
     };
 
-    const updatePCStatus = async (id, status) => {
+    const updatePCStatusHandler = async (id, status) => {
         try {
-            const since = status === 'in_use' ? new Date().toISOString() : '';
-            await axios.patch(`${ApiUrl}${id}/`, {
-                status,
-                since,
-                currentUser: 'currentUser'
-            });
-
-            const updatedPcs = pcs.map(pc => (pc.id === id ? { ...pc, status, currentUser: 'currentUser', since } : pc));
+            await updatePCStatus(id, status, 'currentUser');
+            const updatedPcs = pcs.map(pc => 
+                pc.id === id 
+                    ? { ...pc, status, currentUser: 'currentUser', since: new Date() } 
+                    : pc
+            );
             setPcs(updatedPcs);
             setError(null);
-            await refreshPCs();
         } catch (error) {
             console.error('Update error:', error);
             setError("Failed to update PC status. Please try again.");
@@ -84,8 +60,14 @@ function Dashboard() {
     const handleAddPC = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(ApiUrl, newPC);
-            await refreshPCs();
+            await addPC(newPC.Group, {
+                name: newPC.Title,
+                status: 'available',
+                currentUser: '',
+                since: new Date()
+            });
+            const updatedPCs = await getPCs();
+            setPcs(updatedPCs);
         } catch (error) {
             console.error('Error adding PC:', error);
             setError(error.message || "An unexpected error occurred while adding a new PC.");
@@ -93,11 +75,9 @@ function Dashboard() {
     };
 
     const groupedPCs = pcs.reduce((acc, pc) => {
-        const groupName = groups[pc.group] || 'Uncategorized';
-        if (!acc[groupName]) {
-            acc[groupName] = [];
-        }
-        acc[groupName].push(pc);
+        const group = pc.group_id.id;
+        if (!acc[group]) acc[group] = [];
+        acc[group].push(pc);
         return acc;
     }, {});
 
@@ -122,30 +102,12 @@ function Dashboard() {
                     <button className="adminToggle" onClick={() => setShowAdminForm(!showAdminForm)}>
                         {showAdminForm ? 'Hide Admin Form' : 'Show Admin Form'}
                     </button>
-                    <form 
-                        ref={formRef} 
-                        onSubmit={handleAddPC} 
-                        className="adminForm"
-                        style={{ display: showAdminForm ? 'block' : 'none' }}
-                    >
-                        <input
-                            type="text"
-                            placeholder="PC Name"
-                            value={newPC.Title}
-                            onChange={(e) => setNewPC({ ...newPC, Title: e.target.value })}
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Group"
-                            value={newPC.Group}
-                            onChange={(e) => setNewPC({ ...newPC, Group: e.target.value })}
-                            required
-                        />
-                        <button type="submit">Add PC</button>
-                    </form>
+                    <div style={{ display: showAdminForm ? 'block' : 'none' }}>
+                        <AddPCForm />
+                    </div>
                 </>
             )}
+            <PCList />
             {Object.entries(groupedPCs)
                 .sort(([a], [b]) => a.localeCompare(b))
                 .map(([groupName, groupPCs]) => (
@@ -156,7 +118,7 @@ function Dashboard() {
                                 <PCStatus
                                     key={pc.id}
                                     pc={pc}
-                                    updatePCStatus={updatePCStatus}
+                                    updatePCStatus={updatePCStatusHandler}
                                     currentUser={'currentUser'}
                                 />
                             ))}
