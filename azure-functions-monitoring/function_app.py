@@ -8,13 +8,13 @@ from azure.identity import DefaultAzureCredential
 
 app = func.FunctionApp()
 
-server = 'pc-dashboard-server.database.windows.net'
+server = 'tcp:pc-dashboard-server.database.windows.net'
 database = 'monitoring-db'
 
 def get_connection():
     credential = DefaultAzureCredential()
     access_token = credential.get_token("https://database.windows.net/.default").token
-    connection_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};Authentication=ActiveDirectoryMsi;'
+    connection_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server},1433;DATABASE={database};Authentication=ActiveDirectoryMsi;TrustServerCertificate=no;'
     conn = pyodbc.connect(connection_string, attrs_before={1256: access_token})
     return conn
 
