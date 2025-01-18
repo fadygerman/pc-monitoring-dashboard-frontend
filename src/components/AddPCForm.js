@@ -1,34 +1,31 @@
 import React, { useState } from 'react';
-import { addPC } from './fsData';
 
-function AddPCForm() {
-    const [newPC, setNewPC] = useState({ name: '', group: '', status: 'available' });
+function AddPCForm({ newPC, setNewPC, handleAddPC }) {
     const [error, setError] = useState(null);
 
-    const handleAddPC = async (e) => {
-        e.preventDefault();
+    // If you want localized error handling, you can wrap handleAddPC in a try/catch here:
+    const localSubmit = (e) => {
         try {
-            await addPC(newPC.group, newPC);
-            // Optionally, refresh the list of PCs or provide feedback to the user
-        } catch (error) {
+            handleAddPC(e);
+        } catch (err) {
             setError("Failed to add PC. Please try again later.");
         }
     };
 
     return (
-        <form onSubmit={handleAddPC}>
+        <form onSubmit={localSubmit}>
             <input
                 type="text"
-                placeholder="PC Name"
-                value={newPC.name}
-                onChange={(e) => setNewPC({ ...newPC, name: e.target.value })}
+                placeholder="PC Title"
+                value={newPC.Title}
+                onChange={(e) => setNewPC({ ...newPC, Title: e.target.value })}
                 required
             />
             <input
                 type="text"
                 placeholder="Group"
-                value={newPC.group}
-                onChange={(e) => setNewPC({ ...newPC, group: e.target.value })}
+                value={newPC.Group}
+                onChange={(e) => setNewPC({ ...newPC, Group: e.target.value })}
                 required
             />
             <button type="submit">Add PC</button>

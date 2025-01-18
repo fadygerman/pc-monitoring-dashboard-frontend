@@ -12,6 +12,8 @@ function Dashboard() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [showAdminForm, setShowAdminForm] = useState(false);
     const formRef = useRef(null);
+
+    // Keep 'newPC' state in the parent
     const [newPC, setNewPC] = useState({
         Title: '',
         Group: '',
@@ -64,6 +66,7 @@ function Dashboard() {
         }
     };
 
+    // Use this function within AddPCForm via props
     const handleAddPC = async (e) => {
         e.preventDefault();
         try {
@@ -75,6 +78,7 @@ function Dashboard() {
             });
             const updatedPCs = await getPCs();
             setPcs(updatedPCs);
+            setNewPC({ Title: '', Group: '', Status: 'available', CurrentUser: '', Since: '' });
         } catch (error) {
             console.error('Error adding PC:', error);
             setError(error.message || "An unexpected error occurred while adding a new PC.");
@@ -102,15 +106,24 @@ function Dashboard() {
 
     return (
         <div className="dashboard">
-            {/* <h1>PC Monitoring Dashboard</h1> */}
             {error && <div className="error-message">{error}</div>}
             {isAdmin && (
                 <>
-                    <button className="adminToggle" onClick={() => setShowAdminForm(!showAdminForm)}>
+                    <button
+                        className="adminToggle"
+                        onClick={() => setShowAdminForm(!showAdminForm)}
+                    >
                         {showAdminForm ? 'Hide Admin Form' : 'Show Admin Form'}
                     </button>
-                    <div style={{ display: showAdminForm ? 'block' : 'none' }}>
-                        <AddPCForm />
+                    <div
+                        style={{ display: showAdminForm ? 'block' : 'none' }}
+                        ref={formRef}
+                    >
+                        <AddPCForm
+                            newPC={newPC}
+                            setNewPC={setNewPC}
+                            handleAddPC={handleAddPC}
+                        />
                     </div>
                 </>
             )}
