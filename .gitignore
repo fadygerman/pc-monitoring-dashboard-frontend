@@ -5,10 +5,12 @@ node_modules/
 dist/
 build/
 .vscode/
-azure-functions-monitoring\.vscode
 
 # Environment variables
 .env
 
 # Microsoft package file
 packages-microsoft-prod.deb
+
+# Azure Functions project settings
+azure-functions-monitoring/
