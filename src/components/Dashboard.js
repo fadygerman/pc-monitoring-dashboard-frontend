@@ -115,7 +115,7 @@ function Dashboard() {
 
     return (
         <div className="dashboard">
-            <h1>PC Monitoring Dashboard</h1>
+            {/* <h1>PC Monitoring Dashboard</h1> */}
             {error && <div className="error-message">{error}</div>}
             {isAdmin && (
                 <>
