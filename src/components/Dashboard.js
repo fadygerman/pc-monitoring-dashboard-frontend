@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getPCs, updatePCStatus, addPC } from './fsData.js';
+import { getPCs, updatePCStatus, addPC } from './fsData';
 import PCStatus from './PCStatus';
 import './Dashboard.scss';
 
