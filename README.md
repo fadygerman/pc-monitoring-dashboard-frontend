@@ -77,31 +77,8 @@ REACT_APP_FIREBASE_APP_ID=your_app_id
 Deploy the application using Azure Static Web Apps through GitHub Actions:
 
 1. Ensure your repository is connected to Azure Static Web Apps.
-2. Create a GitHub Actions workflow file in `.github/workflows` directory:
-   ```yaml
-   name: Azure Static Web Apps CI/CD
-
-   on:
-     push:
-       branches:
-         - main
-
-   jobs:
-     build_and_deploy:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v2
-         - name: Set up Node.js
-           uses: actions/setup-node@v2
-           with:
-             node-version: '14'
-         - run: npm install
-         - run: npm run build
-         - name: Deploy to Azure Static Web Apps
-           uses: Azure/static-web-apps-deploy@v1
-           with:
-             azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-   ```
+2. Use a GitHub Actions workflow file in `.github/workflows` directory:
+   
 3. Commit and push the workflow file to your repository.
 
 ## Usage
