@@ -7,13 +7,14 @@ import './Dashboard.scss';
 
 function Dashboard() {
     const [pcs, setPcs] = useState([]);
-    const [groups, setGroups] = useState({});
+    const [groups, setGroups] = useState([]);
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [showAdminForm, setShowAdminForm] = useState(false);
+
+    // Use formRef similarly to PcStatus to focus admin form inputs
     const formRef = useRef(null);
 
-    // Keep 'newPC' state in the parent
     const [newPC, setNewPC] = useState({
         Title: '',
         Group: '',
@@ -22,23 +23,32 @@ function Dashboard() {
         Since: ''
     });
 
+    // Fetch PCs and Groups once
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const pcsData = await getPCs();
                 setPcs(pcsData);
                 const groupsData = await getGroups();
-                setGroups(groupsData);
+                setGroups(groupsData); // store array of group docs
                 setError(null);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to load data. Please try again later.");
             }
         };
-
         fetchData();
     }, []);
 
+    // Example usage of formRef (focus first input when form is shown)
+    useEffect(() => {
+        if (showAdminForm && formRef.current) {
+            const firstInput = formRef.current.querySelector('input');
+            if (firstInput) firstInput.focus();
+        }
+    }, [showAdminForm]);
+
+    // Refresh PCs from Firestore
     const refreshPCs = async () => {
         try {
             const pcsData = await getPCs();
@@ -66,7 +76,7 @@ function Dashboard() {
         }
     };
 
-    // Use this function within AddPCForm via props
+    // Now use refreshPCs here instead of manually fetching updated PCs
     const handleAddPC = async (e) => {
         e.preventDefault();
         try {
@@ -76,22 +86,47 @@ function Dashboard() {
                 currentUser: '',
                 since: new Date()
             });
-            const updatedPCs = await getPCs();
-            setPcs(updatedPCs);
-            setNewPC({ Title: '', Group: '', Status: 'available', CurrentUser: '', Since: '' });
+            await refreshPCs(); // reuse refreshPCs
+            setNewPC({ 
+                Title: '', 
+                Group: '', 
+                Status: 'available', 
+                CurrentUser: '', 
+                Since: '' 
+            });
         } catch (error) {
             console.error('Error adding PC:', error);
             setError(error.message || "An unexpected error occurred while adding a new PC.");
         }
     };
 
+    // Optional example usage of "groups" in the UI
+    // (e.g., displaying a simple group list above the PC grid)
+    // The group object will have "id" and "name" if stored that way in Firestore
+    // Render only if there are any groups
+    const renderGroupList = () => {
+        if (!groups.length) return null;
+        return (
+            <div style={{ marginBottom: '1rem' }}>
+                <h3>Groups</h3>
+                <ul>
+                    {groups.map(group => (
+                        <li key={group.id}>{group.name}</li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
+
+    // Group PCs (still used to display them in the UI)
     const groupedPCs = pcs.reduce((acc, pc) => {
-        const group = pc.group_id.id;
+        const group = pc.group_id?.id || 'Unknown Group';
         if (!acc[group]) acc[group] = [];
         acc[group].push(pc);
         return acc;
     }, {});
 
+    // Check admin status
     useEffect(() => {
         const checkAdminStatus = async () => {
             try {
@@ -107,6 +142,7 @@ function Dashboard() {
     return (
         <div className="dashboard">
             {error && <div className="error-message">{error}</div>}
+            {renderGroupList()}
             {isAdmin && (
                 <>
                     <button
@@ -115,8 +151,8 @@ function Dashboard() {
                     >
                         {showAdminForm ? 'Hide Admin Form' : 'Show Admin Form'}
                     </button>
-                    <div
-                        style={{ display: showAdminForm ? 'block' : 'none' }}
+                    <div 
+                        style={{ display: showAdminForm ? 'block' : 'none' }} 
                         ref={formRef}
                     >
                         <AddPCForm
