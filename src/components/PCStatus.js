@@ -12,7 +12,7 @@ const UserDisplay = ({ userName, compact }) => (
 );
 
 const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
-    const [error, setError] = useState(null);
+    // const [error, setError] = useState(null);
     const [status, setStatus] = useState(pc.status);
     const [loading, setLoading] = useState(false);
 
