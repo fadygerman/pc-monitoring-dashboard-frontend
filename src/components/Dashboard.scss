@@ -274,20 +274,50 @@
     margin: 0;
     padding: 0;
     border: none;
+    z-index: 2; // Ensure it stays above other elements
 
     .userDisplay.compact {
       padding: 0;
       min-height: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       .userCoin {
         width: 24px;
         height: 24px;
+        border-radius: 50%;
+        background-color: #03787c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 
         .userInitials {
+          color: #ffffff;
           font-size: 10px;
+          font-weight: 600;
+          line-height: 24px;
+          text-transform: uppercase;
         }
       }
     }
+  }
+
+  // Status-specific user icon adjustments
+  &.maintenance .userInfo .userDisplay.compact .userCoin {
+    background-color: #856404;
+  }
+
+  &.offline .userInfo .userDisplay.compact .userCoin {
+    background-color: #6c757d;
+    opacity: 0.8;
+  }
+
+  &.in_use .userInfo .userDisplay.compact .userCoin {
+    background-color: #dc3545;
   }
 }
 
