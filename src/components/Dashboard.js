@@ -4,7 +4,7 @@ import PCStatus from './PCStatus';
 import './Dashboard.scss';
 
 const BaseUrl = 'https://<your-backend-app-service>.azurewebsites.net/';
-const ApiUrl = `${BaseUrl}api/pcs/`;
+const ApiUrl = 'https://pc-monitoring-func-app.azurewebsites.net/api/ReadPC';
 const GroupsApiUrl = `${BaseUrl}api/groups/`;
 
 function Dashboard() {
@@ -17,13 +17,13 @@ function Dashboard() {
     const formRef = useRef(null);
 
     useEffect(() => {
-        const fetchPCs = async () => {
+        const fetchData = async () => {
             try {
                 const response = await axios.get(ApiUrl);
                 setPcs(response.data);
                 setError(null);
             } catch (error) {
-                console.error('Error fetching PCs:', error);
+                console.error("Error fetching data", error);
                 setError(error.message || "An unexpected error occurred while loading PCs.");
             }
         };
@@ -42,7 +42,7 @@ function Dashboard() {
         };
 
         fetchGroups();
-        fetchPCs();
+        fetchData();
     }, []);
 
     const refreshPCs = async () => {
