@@ -63,9 +63,15 @@ function Dashboard() {
     const updatePCStatusHandler = async (id, status) => {
         try {
             await updatePCStatus(id, status, 'currentUser');
-            const updatedPcs = pcs.map(pc => 
-                pc.id === id 
-                    ? { ...pc, status, currentUser: 'currentUser', since: new Date() } 
+            const oldPc = pcs.find(pc => pc.id === id);
+            const updatedSince =
+                status === 'in_use' && oldPc.status !== 'in_use'
+                    ? new Date()
+                    : oldPc.since;
+
+            const updatedPcs = pcs.map(pc =>
+                pc.id === id
+                    ? { ...pc, status, currentUser: 'currentUser', since: updatedSince }
                     : pc
             );
             setPcs(updatedPcs);
@@ -142,46 +148,50 @@ function Dashboard() {
     return (
         <div className="dashboard">
             {error && <div className="error-message">{error}</div>}
-            {renderGroupList()}
-            {isAdmin && (
-                <>
-                    <button
-                        className="adminToggle"
-                        onClick={() => setShowAdminForm(!showAdminForm)}
-                    >
-                        {showAdminForm ? 'Hide Admin Form' : 'Show Admin Form'}
-                    </button>
-                    <div 
-                        style={{ display: showAdminForm ? 'block' : 'none' }} 
-                        ref={formRef}
-                    >
-                        <AddPCForm
-                            newPC={newPC}
-                            setNewPC={setNewPC}
-                            handleAddPC={handleAddPC}
-                        />
-                    </div>
-                </>
-            )}
-            <PCList />
-            {Object.entries(groupedPCs)
-                .sort(([a], [b]) => a.localeCompare(b))
-                .map(([groupName, groupPCs]) => (
-                    <div key={groupName} className="lab-group">
-                        <h2>{groupName}</h2>
-                        <div className="pc-grid">
-                            {groupPCs.map(pc => (
-                                <PCStatus
-                                    key={pc.id}
-                                    pc={pc}
-                                    updatePCStatus={updatePCStatusHandler}
-                                    currentUser={'currentUser'}
-                                />
-                            ))}
+            <div className="content-container">
+                {renderGroupList()}
+                {isAdmin && (
+                    <>
+                        <button
+                            className="adminToggle"
+                            onClick={() => setShowAdminForm(!showAdminForm)}
+                        >
+                            {showAdminForm ? 'Hide Admin Form' : 'Show Admin Form'}
+                        </button>
+                        <div 
+                            style={{ display: showAdminForm ? 'block' : 'none' }} 
+                            ref={formRef}
+                        >
+                            <AddPCForm
+                                newPC={newPC}
+                                setNewPC={setNewPC}
+                                handleAddPC={handleAddPC}
+                            />
                         </div>
-                    </div>
-                ))
-            }
+                    </>
+                )}
+                <PCList />
+                <div className="groups-pcs-container">
+                    {Object.entries(groupedPCs)
+                        .sort(([a], [b]) => a.localeCompare(b))
+                        .map(([groupName, groupPCs]) => (
+                            <div key={groupName} className="lab-group">
+                                <h2>{groupName}</h2>
+                                <div className="pc-grid">
+                                    {groupPCs.map(pc => (
+                                        <PCStatus
+                                            key={pc.id}
+                                            pc={pc}
+                                            updatePCStatus={updatePCStatusHandler}
+                                            currentUser={'currentUser'}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
         </div>
     );
 }

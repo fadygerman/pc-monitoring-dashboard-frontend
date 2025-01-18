@@ -1,4 +1,4 @@
-@use '~@fluentui/react/dist/sass/References.scss' as *;
+// @use '~@fluentui/react/dist/sass/References.scss' as *;
 
 :root {
   --bodyText: #323130;
@@ -10,6 +10,11 @@
   overflow: hidden;
   padding: 1em;
   color: var(--bodyText);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Adjust as needed */
 
   .error-message {
     background-color: #ff6b6b;
@@ -31,6 +36,17 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
+}
+
+.groups-pcs-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.groups, .pcs {
+  margin: 10px 0; /* Adjust as needed */
 }
 
 .pc-status {
@@ -135,93 +151,6 @@
       line-height: 10px;
     }
   }
-}
-
-@keyframes spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes fadeOut {
-  0% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-.pcStatusContainer {
-  overflow: hidden;
-  padding: 1em;
-  color: var(--bodyText);
-}
-
-.welcome {
-  text-align: center;
-  display: none;
-}
-
-.dashboardTitle {
-  text-align: center;
-  margin: 20px 0;
-  color: "[theme:bodyText, default: #323130]";
-}
-
-.welcomeImage {
-  width: 100%;
-  max-width: 420px;
-}
-
-.links {
-  a {
-    text-decoration: none;
-    color: var(--link);
-
-    &:hover {
-      text-decoration: underline;
-      color: var(--linkHovered);
-    }
-  }
-}
-
-.errorMessage {
-  text-align: center;
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  padding: 10px;
-  margin: 10px 0;
-  animation: fadeOut 5s forwards;
-}
-
-.pcStatus {
-  padding: 10px;
-  margin: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, opacity 0.3s ease;
-  min-width: 100px;
-  min-height: 80px;
-  position: relative;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-
-  h3 {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 8px 0;
-    color: #323130;
-  }
-
-  p {
-    font-size: 12px;
-    margin: 0;
-    color: #605e5c;
-  }
 
   .userInfo {
     margin-top: 12px;
@@ -230,16 +159,7 @@
     width: 100%;
   }
 
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &.available {
-    background-color: #d4edda;
-  }
-
   &.in_use {
-    background-color: #f8a8ae;
     min-height: 80px;
     position: relative;
 
@@ -328,44 +248,6 @@
 
     .userInfo {
       border-top-color: rgba(108, 117, 125, 0.2);
-    }
-  }
-
-  &.loading {
-    position: relative;
-  }
-
-  &.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #fff;
-    border-top: 2px solid #000;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    transform: translate(-50%, -50%);
-  }
-
-  &.available:hover,
-  &.in_use:hover {
-    opacity: 0.8;
-    cursor: pointer;
-  }
-
-  &.maintenance:hover,
-  &.offline:hover {
-    opacity: 1;
-    cursor: not-allowed;
-  }
-
-  &.maintenance:hover,
-  &.offline:hover {
-    .hoverInfo {
-      display: block;
-      z-index: 2;
     }
   }
 
@@ -483,18 +365,6 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto;
-}
-
-.labGroup {
-  margin-bottom: 20px;
-  width: 100%;
-
-  h2 {
-    text-align: left;
-    margin-bottom: 15px;
-    padding-left: 10px;
-    color: var(--bodyText);
-  }
 }
 
 .lab-group {
@@ -695,23 +565,5 @@
     h3, p {
       color: #856404;
     }
-  }
-}
-
-.dashboard-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-
-  h1 {
-    font-size: 24px;
-    color: var(--bodyText);
-  }
-
-  i {
-    font-size: 24px;
-    color: var(--link);
   }
 }
