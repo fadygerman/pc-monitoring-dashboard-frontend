@@ -79,12 +79,14 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     </div>
                 )}
 
-                {/* Show hover info for all non-available states */}
+                {/* Updated hover info to only show since if it exists and has a value */}
                 {status !== 'available' && (
                     <div className={`hover-info ${status}`}>
                         <div>{getStatusDisplay(status)}</div>
                         {pc.currentUser && <div>User: {pc.currentUser}</div>}
-                        {pc.since && <div>Since: {formatDateTime(pc.since)}</div>}
+                        {pc.since && formatDateTime(pc.since) && (
+                            <div>Since: {formatDateTime(pc.since)}</div>
+                        )}
                     </div>
                 )}
             </div>

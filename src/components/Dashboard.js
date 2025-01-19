@@ -28,7 +28,17 @@ function Dashboard() {
         const fetchData = async () => {
             try {
                 const pcsData = await getPCs();
-                setPcs(pcsData);
+                // Ensure each PC has a 'since' timestamp if it's in a non-available state
+                const processedPCs = pcsData.map(pc => {
+                    if (pc.status !== 'available' && !pc.since) {
+                        return {
+                            ...pc,
+                            since: pc.lastUpdated || new Date().toISOString() // Use lastUpdated if available, or current time as fallback
+                        };
+                    }
+                    return pc;
+                });
+                setPcs(processedPCs);
                 const groupsData = await getGroups();
                 setGroups(groupsData); // store array of group docs
                 setError(null);
@@ -52,7 +62,16 @@ function Dashboard() {
     const refreshPCs = async () => {
         try {
             const pcsData = await getPCs();
-            setPcs(pcsData);
+            const processedPCs = pcsData.map(pc => {
+                if (pc.status !== 'available' && !pc.since) {
+                    return {
+                        ...pc,
+                        since: pc.lastUpdated || new Date().toISOString()
+                    };
+                }
+                return pc;
+            });
+            setPcs(processedPCs);
             setError(null);
         } catch (error) {
             console.error("Error refreshing PCs:", error);
