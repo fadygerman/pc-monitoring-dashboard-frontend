@@ -8,10 +8,11 @@ build/
 
 # Environment variables
 .env
-package-lock.json
+./package-lock.json
 
 # Microsoft package file
 packages-microsoft-prod.deb
 
 # Azure Functions project settings
 azure-functions-monitoring/
+package-lock.json
