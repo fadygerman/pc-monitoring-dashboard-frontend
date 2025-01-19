@@ -84,8 +84,8 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     <div className={`hover-info ${status}`}>
                         <div>{getStatusDisplay(status)}</div>
                         {pc.currentUser && <div>User: {pc.currentUser}</div>}
-                        {pc.since && formatDateTime(pc.since) && (
-                            <div>Since: {formatDateTime(pc.since)}</div>
+                        {pc.since && (
+                            <div>Since: {formatDateTime(pc.since) ? formatDateTime(pc.since) : pc.since}</div>
                         )}
                     </div>
                 )}
