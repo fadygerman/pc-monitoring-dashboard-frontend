@@ -46,6 +46,11 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
 
     const formatDateTime = (dateString) => {
         try {
+            // Handle Firestore timestamp
+            if (dateString && typeof dateString === 'object' && dateString.seconds) {
+                return new Date(dateString.seconds * 1000).toLocaleString();
+            }
+            // Handle string dates
             const date = new Date(dateString);
             return isNaN(date.getTime()) ? null : date.toLocaleString();
         } catch {
@@ -84,8 +89,8 @@ const PCStatus = ({ pc, updatePCStatus, currentUser }) => {
                     <div className={`hover-info ${status}`}>
                         <div>{getStatusDisplay(status)}</div>
                         {pc.currentUser && <div>User: {pc.currentUser}</div>}
-                        {pc.since && (
-                            <div>Since: {formatDateTime(pc.since) ? formatDateTime(pc.since) : pc.since}</div>
+                        {pc.since && formatDateTime(pc.since) && (
+                            <div>Since: {formatDateTime(pc.since)}</div>
                         )}
                     </div>
                 )}
